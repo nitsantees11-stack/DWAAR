@@ -1,0 +1,163 @@
+{
+ "at": "2026-11-05T13:15:22.664Z",
+ "fnUrl": "http://127.0.0.1:8788/make-server-4d6fa028",
+ "failed": 0,
+ "summary": {
+  "media": {
+   "docs": 10,
+   "ok": 10,
+   "files": 10,
+   "errors": []
+  },
+  "service-categories": {
+   "docs": 5,
+   "ok": 5,
+   "files": 0,
+   "errors": []
+  },
+  "services": {
+   "docs": 21,
+   "ok": 21,
+   "files": 0,
+   "errors": []
+  },
+  "device-models": {
+   "docs": 52,
+   "ok": 52,
+   "files": 0,
+   "errors": []
+  },
+  "promotions": {
+   "docs": 3,
+   "ok": 3,
+   "files": 0,
+   "errors": []
+  },
+  "skill-tests": {
+   "docs": 5,
+   "ok": 5,
+   "files": 0,
+   "errors": []
+  },
+  "users": {
+   "docs": 2,
+   "ok": 2,
+   "files": 0,
+   "errors": []
+  },
+  "addresses": {
+   "docs": 1,
+   "ok": 1,
+   "files": 0,
+   "errors": []
+  },
+  "waitlist-entries": {
+   "docs": 1,
+   "ok": 1,
+   "files": 0,
+   "errors": []
+  },
+  "partners": {
+   "docs": 7,
+   "ok": 7,
+   "files": 0,
+   "errors": []
+  },
+  "partner-documents": {
+   "docs": 29,
+   "ok": 29,
+   "files": 29,
+   "errors": []
+  },
+  "bookings": {
+   "docs": 1,
+   "ok": 1,
+   "files": 0,
+   "errors": []
+  },
+  "booking-events": {
+   "docs": 2,
+   "ok": 2,
+   "files": 0,
+   "errors": []
+  },
+  "warranties": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "support-tickets": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "problem-videos": {
+   "docs": 1,
+   "ok": 1,
+   "files": 1,
+   "errors": []
+  },
+  "job-offers": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "job-media": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "partner-locations": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "payouts": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "earnings-ledger": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  },
+  "partner-tickets": {
+   "docs": 0,
+   "ok": 0,
+   "files": 0,
+   "errors": []
+  }
+ },
+ "counts": {
+  "media": 10,
+  "service-categories": 5,
+  "services": 21,
+  "device-models": 52,
+  "promotions": 3,
+  "skill-tests": 5,
+  "users": 2,
+  "addresses": 1,
+  "waitlist-entries": 1,
+  "partners": 7,
+  "partner-documents": 29,
+  "bookings": 1,
+  "booking-events": 2,
+  "warranties": 0,
+  "support-tickets": 0,
+  "problem-videos": 1,
+  "job-offers": 0,
+  "job-media": 0,
+  "partner-locations": 0,
+  "payouts": 0,
+  "earnings-ledger": 0,
+  "partner-tickets": 0
+ }
+}

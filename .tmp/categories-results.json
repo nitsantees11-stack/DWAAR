@@ -1,0 +1,26 @@
+{
+ "passed": 19,
+ "failed": 0,
+ "failures": [],
+ "all": [
+  "PASS GET categories needs the partner key",
+  "PASS GET categories lists the live keys",
+  "PASS GET categories maps roles to keys",
+  "PASS each category has id, slug, name, flow, roles",
+  "PASS PATCH me accepts key \"ac\"",
+  "PASS stored as the category id",
+  "PASS PATCH me accepts the slug",
+  "PASS PATCH me still accepts the id",
+  "PASS case-insensitive key, duplicates merged",
+  "PASS wrong flow for the role -> category_role_mismatch",
+  "PASS coming-soon category -> invalid_category naming it",
+  "PASS unknown value -> invalid_category",
+  "PASS role and key change together",
+  "PASS rider + mobile",
+  "PASS skill test by key",
+  "PASS skill test answers stay hidden",
+  "PASS skill test for an unselected key -> category_not_selected",
+  "PASS skill test submit by key",
+  "PASS test partner cleaned up"
+ ]
+}

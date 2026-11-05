@@ -1,0 +1,5 @@
+actionId found: true (scripts scanned: 20)
+mp4 upload -> 200 0:{"a":"$@1","q":"","i":true,"b":"development"} 1:D"$2" 1:{"ok":true,"id":"f403842d-495a-4b9f-9545-f5de903572c5"} 
+3 MB body (over the old 1 MB default) -> 200 0:{"a":"$@1","q":"","i":true,"b":"development"} 1:D"$2" 1:{"ok":false,"error":"video_upload"} 
+pdf -> 200 0:{"a":"$@1","q":"","i":true,"b":"development"} 1:D"$2" 1:{"ok":false,"error":"video_type"} 
+stored for tester: 1 -> video/mp4 43152B dur=3

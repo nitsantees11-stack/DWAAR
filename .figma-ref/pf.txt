@@ -1,0 +1,686 @@
+# Payload CMS Application Development
+
+Payload is a Next.js native CMS with TypeScript-first architecture, providing admin panel, database management, REST/GraphQL APIs, authentication, and file storage.
+
+In Figma Make, adding Payload replaces the project template and its instructions.
+
+## Choose Payload Features
+
+Use official Payload features only when needed; match plugin versions to Payload:
+
+- Editor-managed public metadata: `seoPlugin` targeting the relevant collections
+  or globals; render its `meta` fields and use `uploadsCollection` for social images.
+- Administrator-defined forms: `formBuilderPlugin` with canonical `forms` and
+  `form-submissions`; render configured fields and submit to that schema. Fixed
+  application forms use ordinary collections.
+- Durable asynchronous work: Payload Jobs with registered tasks, queueing,
+  retries and persisted results. Keep immediate mutations synchronous.
+
+Verify the authorized result read: field access must permit required data;
+selections must include access-rule inputs; hidden fields require `showHiddenFields: true`.
+
+## Payload Media Storage, Images, and Caching
+
+Store CMS-managed images in an upload-enabled Payload collection and reference
+its documents through upload relationships. Ingest remote starter files with
+`externalURL` so editors can replace them through the same relationship. Do not
+substitute parallel URL fields, hardcoded image arrays, or remote starter URLs.
+
+Render `media.url` with `next/image`, useful alt text, and dimensions or a sized
+`fill` parent. Keep the existing `figma-image-loader.ts`; do not add custom media
+proxies, `images.remotePatterns`, raw `<img>` tags, or disable optimization.
+Check image dimensions in each requested view and after upload replacement;
+when publishing is requested, check the published site too.
+
+Set cache headers through each upload collection's
+[`upload.modifyResponseHeaders`](https://payloadcms.com/docs/upload/overview#modifying-response-headers):
+
+- **Public cache:** only if `access.read` unconditionally returns `true` for
+  every user, request, and document, and every file is intentionally public.
+- **Otherwise:** explicitly set `Cache-Control: private, no-store`, including
+  authenticated, filtered, mixed-access, missing, or unclear read rules.
+
+CDN cache hits bypass Payload access checks. Keep protected files in a separate
+collection with protected read access; never weaken access to enable caching.
+Next.js route/page caching does not configure the storage CDN. Avoid `immutable`
+for replaceable files unless their URLs change with their contents.
+
+Public example (one hour; choose a lifetime appropriate to the app):
+
+```ts
+upload: {
+  modifyResponseHeaders: ({ headers }) => {
+    headers.set('Cache-Control', 'public, max-age=3600, s-maxage=3600')
+    return headers
+  },
+},
+```
+
+Protected or unclear access (do not omit the header):
+
+```ts
+upload: {
+  modifyResponseHeaders: ({ headers }) => {
+    headers.set('Cache-Control', 'private, no-store')
+    return headers
+  },
+},
+```
+
+## Quick Reference
+
+| Task                     | Solution                                                                   | Details                                                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Auto-generate slugs      | `{ type: 'slug', useAsSlug: 'title' }`                                     | [FIELDS.md#slug-field](reference/FIELDS.md#slug-field)                                                                           |
+| Restrict content by user | Access control with query                                                  | [ACCESS-CONTROL.md#row-level-security-with-complex-queries](reference/ACCESS-CONTROL.md#row-level-security-with-complex-queries) |
+| Local API user ops       | `user` + `overrideAccess: false`                                           | [ACCESS-CONTROL.md#local-api-access-control-overrideaccess](reference/ACCESS-CONTROL.md#local-api-access-control-overrideaccess)                                       |
+| Draft/publish workflow   | `versions: { drafts: true }`                                               | [COLLECTIONS.md#versioning--drafts](reference/COLLECTIONS.md#versioning--drafts)                                                 |
+| Computed fields          | `virtual: true` with **field-level** `hooks.afterRead` returning the value | [FIELDS.md#virtual-fields](reference/FIELDS.md#virtual-fields)                                                                   |
+| Document titles          | Stored top-level field in `admin.useAsTitle`                               | [COLLECTIONS.md#useastitle](reference/COLLECTIONS.md#useastitle)                                                                 |
+| Conditional fields       | `admin.condition`                                                          | [FIELDS.md#conditional-fields](reference/FIELDS.md#conditional-fields)                                                           |
+| Custom field validation  | `validate` function                                                        | [FIELDS.md#validation](reference/FIELDS.md#validation)                                                                           |
+| Filter relationship list | `filterOptions` on field                                                   | [FIELDS.md#relationship](reference/FIELDS.md#relationship)                                                                       |
+| Select specific fields   | `select` parameter                                                         | [QUERIES.md#field-selection](reference/QUERIES.md#field-selection)                                                               |
+| Auto-set author/dates    | beforeChange hook                                                          | [HOOKS.md#collection-hooks](reference/HOOKS.md#collection-hooks)                                                                 |
+| Prevent hook loops       | `req.context` check                                                        | [HOOKS.md#context](reference/HOOKS.md#context)                                                                                   |
+| Cascading deletes        | beforeDelete hook                                                          | [HOOKS.md#collection-hooks](reference/HOOKS.md#collection-hooks)                                                                 |
+| Geospatial queries       | `point` field with `near`/`within`                                         | [FIELDS.md#point-geolocation](reference/FIELDS.md#point-geolocation)                                                             |
+| Reverse relationships    | `join` field type                                                          | [FIELDS.md#join-fields](reference/FIELDS.md#join-fields)                                                                         |
+| Next.js revalidation     | Context control in afterChange                                             | [HOOKS.md#nextjs-revalidation-with-context-control](reference/HOOKS.md#nextjs-revalidation-with-context-control)                 |
+| Query by relationship    | Nested property syntax                                                     | [QUERIES.md#nested-properties](reference/QUERIES.md#nested-properties)                                                           |
+| Complex queries          | AND/OR logic                                                               | [QUERIES.md#andor-logic](reference/QUERIES.md#andor-logic)                                                                       |
+| Transactions             | Pass `req` to operations                                                   | [Transaction Failures in Hooks](#2-transaction-failures-in-hooks)                                                               |
+| Background jobs          | Jobs queue with tasks                                                      | [ADVANCED.md#jobs-queue](reference/ADVANCED.md#jobs-queue)                                                                       |
+| Custom API routes        | Collection custom endpoints                                                | [ADVANCED.md#custom-endpoints](reference/ADVANCED.md#custom-endpoints)                                                           |
+| Multi-language           | `localization` config + `localized: true`                                  | [ADVANCED.md#localization](reference/ADVANCED.md#localization)                                                                   |
+| Create plugin            | `(options) => (config) => Config`                                          | [PLUGIN-DEVELOPMENT.md#plugin-architecture](reference/PLUGIN-DEVELOPMENT.md#plugin-architecture)                                 |
+| Plugin package setup     | Package structure with SWC                                                 | [PLUGIN-DEVELOPMENT.md#plugin-package-structure](reference/PLUGIN-DEVELOPMENT.md#plugin-package-structure)                       |
+| Add fields to collection | Map collections, spread fields                                             | [PLUGIN-DEVELOPMENT.md#adding-fields-to-collections](reference/PLUGIN-DEVELOPMENT.md#adding-fields-to-collections)               |
+| Plugin hooks             | Preserve existing hooks in array                                           | [PLUGIN-DEVELOPMENT.md#adding-hooks](reference/PLUGIN-DEVELOPMENT.md#adding-hooks)                                               |
+| Check field type         | Type guard functions                                                       | [FIELD-TYPE-GUARDS.md](reference/FIELD-TYPE-GUARDS.md)                                                                           |
+| Plan route caching       | Classify each route's lifecycle before querying                            | [Choose Route Lifecycles Before Editing](#choose-route-lifecycles-before-editing)                                                |
+| Finish an app change     | Work the completion audit before reporting done                            | [Completion Audit](#completion-audit)                                                                                            |
+
+## Essential Patterns
+
+### Defaults & Conventions
+
+Apply these defaults after classifying the collection's lifecycle:
+
+- **Choose versions, drafts, and status from the lifecycle**, using the decision
+  below. Do not apply editorial CMS defaults to every Payload collection.
+- **Use native `slug` field type for slugs** instead of hand-rolling
+  `{ name: 'slug', type: 'text', unique: true }`. The `slug` field type
+  auto-generates URL-friendly slugs from a source field and handles
+  uniqueness/indexing. `useAsSlug` is **required** — specify the source field
+  name (e.g., `useAsSlug: 'title'` or `useAsSlug: 'name'`). Defaults to
+  `required`, `unique`, `index: true`, and `position: 'sidebar'`.
+- **`position: 'sidebar'` is for short, at-a-glance fields** — status, category,
+  author, publish date. Avoid it for long fields that need horizontal space to be
+  usable (description, rich text content, long text). Those belong in the main
+  document area.
+- **Use a stored top-level field for `admin.useAsTitle`.** Never set
+  `admin.useAsTitle` to a computed field configured with `virtual: true`; these
+  fields are not queryable and Payload rejects the configuration. A
+  relationship-path virtual such as `virtual: 'author.name'` is supported, but
+  use it only when the title must come from a related document.
+
+### Choose Drafts, Versions, and Domain Status by Lifecycle
+
+Payload stores both editorial content and durable application data. Classify each
+collection or global by its real workflow before adding versioning or status:
+
+- **Editorial publish/review workflow:** Use `versions: { drafts: true }` when
+  editors need drafts, preview, review, scheduled publishing, or unpublished
+  revisions. Payload injects `_status`, whose stored values are `draft` and
+  `published`. “Changed” is a derived Admin UI state for published content with
+  newer draft changes; it is not a stored `_status` value. Do not add a separate
+  business `status` field merely to duplicate editorial publication state.
+- **Operational or application records:** Do not enable drafts by default for
+  records whose lifecycle is not editorial. If the domain has meaningful states
+  such as pending, active, fulfilled, failed, cancelled, or archived, model them
+  with an explicitly declared field such as `status`; do not overload `_status`.
+- **Revision history without publishing:** Use `versions: true` (or a bounded
+  versions configuration without `drafts`) when administrators need document
+  history but there is no draft/publish workflow.
+- **Immutable or append-only records:** Prefer immutable entries and explicit
+  event/audit models over drafts. Do not turn an audit trail into editable draft
+  versions.
+
+If the workflow is unclear, use the simplest model and do not add drafts merely
+because the data lives in Payload. Use `payload-data-modeling` to resolve the
+domain lifecycle before editing the schema.
+
+### Basic Collection
+
+```ts
+import type { CollectionConfig } from 'payload'
+
+export const Posts: CollectionConfig = {
+  slug: 'posts',
+  admin: {
+    useAsTitle: 'title',
+    // _status (from versions.drafts) shows the draft/published state — no custom status field needed
+    defaultColumns: ['title', 'author', '_status', 'createdAt'],
+  },
+  versions: {
+    drafts: true,
+  },
+  fields: [
+    { name: 'title', type: 'text', required: true },
+    { name: 'slug', type: 'slug', useAsSlug: 'title' }, // native slug field — auto-generates from title, unique + indexed, sidebar position
+    { name: 'content', type: 'richText' }, // long field — stays in the main area, not the sidebar
+    // short, at-a-glance field — good sidebar candidate
+    { name: 'author', type: 'relationship', relationTo: 'users', admin: { position: 'sidebar' } },
+  ],
+  timestamps: true,
+}
+```
+
+For more collection patterns (auth, upload, drafts, live preview), see [COLLECTIONS.md](reference/COLLECTIONS.md).
+
+### Common Fields
+
+```ts
+// Text field
+{ name: 'title', type: 'text', required: true }
+
+// Relationship
+{ name: 'author', type: 'relationship', relationTo: 'users', required: true }
+
+// Rich text
+{ name: 'content', type: 'richText', required: true }
+
+// Slug — use native slug field type, not a hand-rolled text field
+{ name: 'slug', type: 'slug', useAsSlug: 'title' }
+
+// Select (for taxonomy or a real domain workflow state; not editorial publish state)
+{ name: 'category', type: 'select', options: ['news', 'tutorial', 'opinion'] }
+
+// Upload
+{ name: 'image', type: 'upload', relationTo: 'media' }
+```
+
+For all field types (array, blocks, point, join, virtual, conditional, etc.), see [FIELDS.md](reference/FIELDS.md).
+
+### Hook Example
+
+Hooks live at one of two levels and they are not interchangeable. **Collection hooks** receive `{ doc, data, req, operation, ... }` and act on the whole document. **Field hooks** live inside an individual field's `hooks` object, receive `{ value, siblingData, ... }`, and **return the new value** for that field. Computed/virtual fields, per-field formatters, and per-field access masking are field hooks; cross-field business logic is a collection hook.
+
+```ts
+// Collection-level: business logic across the document
+export const Posts: CollectionConfig = {
+  slug: 'posts',
+  hooks: {
+    beforeChange: [
+      async ({ data, operation }) => {
+        if (operation === 'create') {
+          data.slug = slugify(data.title)
+        }
+        return data
+      },
+    ],
+  },
+  fields: [{ name: 'title', type: 'text' }],
+}
+
+// Field-level: compute / format a single field's value (virtual fields use this)
+export const Users: CollectionConfig = {
+  slug: 'users',
+  fields: [
+    { name: 'firstName', type: 'text' },
+    { name: 'lastName', type: 'text' },
+    {
+      name: 'fullName',
+      type: 'text',
+      virtual: true,
+      hooks: {
+        afterRead: [({ siblingData }) => `${siblingData.firstName} ${siblingData.lastName}`],
+      },
+    },
+  ],
+}
+```
+
+When asked to "compute a field" or "populate a field's value in a hook", use a **field-level** hook on that field — never a collection-level `afterRead` that mutates `doc`.
+
+For all hook patterns, see [HOOKS.md](reference/HOOKS.md). For access control, see [ACCESS-CONTROL.md](reference/ACCESS-CONTROL.md).
+
+### Access Control with Type Safety
+
+```ts
+import type { Access } from 'payload'
+import type { User } from '@/payload-types'
+
+// Type-safe access control
+export const adminOnly: Access = ({ req }) => {
+  const user = req.user as User
+  return user?.roles?.includes('admin') || false
+}
+
+// Row-level access control
+export const ownPostsOnly: Access = ({ req }) => {
+  const user = req.user as User
+  if (!user) return false
+  if (user.roles?.includes('admin')) return true
+
+  return {
+    author: { equals: user.id },
+  }
+}
+```
+
+### Query Example
+
+```ts
+// Local API (collection uses versions.drafts, so query _status for draft/published state)
+const posts = await payload.find({
+  collection: 'posts',
+  overrideAccess: true,
+  where: {
+    _status: { equals: 'published' },
+    'author.name': { contains: 'john' },
+  },
+  depth: 2,
+  limit: 10,
+  sort: '-createdAt',
+})
+
+// Query with populated relationships
+const post = await payload.findByID({
+  collection: 'posts',
+  overrideAccess: true,
+  id: '123',
+  depth: 2, // Populates relationships (default is 2)
+})
+// Returns: { author: { id: "user123", name: "John" } }
+
+// Without depth, relationships return IDs only
+const post = await payload.findByID({
+  collection: 'posts',
+  overrideAccess: true,
+  id: '123',
+  depth: 0,
+})
+// Returns: { author: "user123" }
+```
+
+For all query operators and REST/GraphQL examples, see [QUERIES.md](reference/QUERIES.md).
+
+### Getting Payload Instance
+
+```ts
+// In API routes (Next.js)
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+export async function GET(request: Request) {
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers: request.headers })
+
+  const posts = await payload.find({
+    collection: 'posts',
+    overrideAccess: false, // this route answers for whoever called it
+    user,
+  })
+
+  return Response.json(posts)
+}
+
+// In Server Components
+import { headers } from 'next/headers'
+import { getPayload } from 'payload'
+import config from '@payload-config'
+
+export default async function Page() {
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers: await headers() })
+  const { docs } = await payload.find({
+    collection: 'posts',
+    overrideAccess: false,
+    user,
+  })
+
+  return <div>{docs.map(post => <h1 key={post.id}>{post.title}</h1>)}</div>
+}
+```
+
+## Implementation Planning
+
+### Choose Route Lifecycles Before Editing
+
+Before writing a public Payload query, list each route and its lifecycle in your
+plan. Use these defaults:
+
+- If the user explicitly requests a build-time snapshot, keep the route static
+  and tell them to click Publish in Figma Make after Payload edits.
+- Cache public blog, magazine, and other editorial list/detail routes unless
+  the user explicitly asks for request-time or live rendering. Asking to manage
+  content in Payload is not an opt-in to uncached rendering.
+- Render frequently changing operational routes at request time.
+- Keep fixed informational routes static.
+
+Do not choose request-time rendering merely because it makes freshness easier
+or avoids writing invalidation hooks. Use it only for an explicitly live route
+or a genuinely high-churn operational workflow; when unsure, treat public
+article list/detail routes as cached editorial content.
+
+For cached Payload routes, use `unstable_cache` and add both `afterChange`
+and `afterDelete` invalidation. Cover the list plus the current, previous,
+and deleted detail locations; use `previousDoc` for slug changes. A time-based
+`revalidate` interval alone is incomplete.
+
+## Security Pitfalls
+
+### 1. Local API Access Control (CRITICAL)
+
+**Always pass `overrideAccess` explicitly on every Local API call.** `overrideAccess: true` bypasses ALL access control, even when a user is passed.
+
+```ts
+// ❌ SECURITY BUG: Passes user but bypasses their permissions anyway
+await payload.find({
+  collection: 'posts',
+  user: someUser,
+  overrideAccess: true, // Access control is BYPASSED!
+})
+
+// ✅ SECURE: User's permissions are enforced
+await payload.find({
+  collection: 'posts',
+  user: someUser,
+  overrideAccess: false, // Respects the user's access control
+})
+```
+
+Three modes:
+
+- **Admin** — `overrideAccess: true`: bypasses access control. Trusted server ops (cron, seeds, migrations, hooks doing system work).
+- **Anonymous** (uncommon) — `overrideAccess: false`, no user: runs the collection `read` access as anonymous. Public reads need `read` to return published-only for non-auth'd users; using Admin mode instead ⚠️ bypasses the filter, so drafts can render publicly.
+- **On behalf of user** — `overrideAccess: false` + `user`: inherits the user's access. API routes, webhooks.
+
+See [ACCESS-CONTROL.md#local-api-access-control-overrideaccess](reference/ACCESS-CONTROL.md#local-api-access-control-overrideaccess).
+
+### 2. Transaction Failures in Hooks
+
+**Nested operations in hooks without `req` break transaction atomicity.**
+
+```ts
+// ❌ DATA CORRUPTION RISK: Separate transaction
+hooks: {
+  afterChange: [
+    async ({ doc, req }) => {
+      await req.payload.create({
+        collection: 'audit-log',
+        overrideAccess: true,
+        data: { docId: doc.id },
+        // Missing req - runs in separate transaction!
+      })
+    },
+  ]
+}
+
+// ✅ ATOMIC: Same transaction
+hooks: {
+  afterChange: [
+    async ({ doc, req }) => {
+      await req.payload.create({
+        collection: 'audit-log',
+        overrideAccess: true,
+        data: { docId: doc.id },
+        req, // Maintains atomicity
+      })
+    },
+  ]
+}
+```
+
+### 3. Infinite Hook Loops
+
+**Hooks triggering operations that trigger the same hooks create infinite loops.**
+
+```ts
+// ❌ INFINITE LOOP
+hooks: {
+  afterChange: [
+    async ({ doc, req }) => {
+      await req.payload.update({
+        collection: 'posts',
+        overrideAccess: true,
+        id: doc.id,
+        data: { views: doc.views + 1 },
+        req,
+      }) // Triggers afterChange again!
+    },
+  ]
+}
+
+// ✅ SAFE: Use context flag
+hooks: {
+  afterChange: [
+    async ({ doc, req, context }) => {
+      if (context.skipHooks) return
+
+      await req.payload.update({
+        collection: 'posts',
+        overrideAccess: true,
+        id: doc.id,
+        data: { views: doc.views + 1 },
+        context: { skipHooks: true },
+        req,
+      })
+    },
+  ]
+}
+```
+
+See [HOOKS.md#context](reference/HOOKS.md#context).
+
+## Project Structure
+
+```txt
+src/
+├── app/
+│   ├── (frontend)/
+│   │   └── page.tsx
+│   └── (payload)/
+│       └── admin/[[...segments]]/page.tsx
+├── collections/
+│   ├── Posts.ts
+│   ├── Media.ts
+│   └── Users.ts
+├── globals/
+│   └── Header.ts
+├── components/
+│   └── CustomField.tsx
+├── hooks/
+│   └── slugify.ts
+└── payload.config.ts
+```
+
+## Building & Type Generation
+
+Payload generates `payload-types.ts` for you — you rarely need to run `generate:types` by hand.
+
+- **During development:** `typescript.autoGenerate` defaults to `true`, so the dev
+  server regenerates types automatically whenever your config changes. Don't run
+  `generate:types` manually while the dev server is running — it's redundant.
+- **During builds:** `payload build` generates the import map and types before
+  running `next build`. Prefer it over calling `next build` directly so neither is
+  ever stale. Pass `--no-types` to skip type generation.
+- **Manual generation** (`payload generate:types`) is an escape hatch — only when
+  neither the dev server nor a build is in the loop (e.g. a one-off script, or CI
+  before a step that doesn't run `payload build`).
+
+```ts
+// payload.config.ts
+export default buildConfig({
+  typescript: {
+    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    // autoGenerate defaults to true — types regenerate in dev automatically
+  },
+})
+
+// Usage
+import type { Post, User } from '@/payload-types'
+```
+
+## Common Gotchas
+
+1. **Always pass `overrideAccess` explicitly** on Local API calls — use `true` only for trusted server-side work
+2. **Missing `req` in nested operations** breaks transaction atomicity
+3. **Hook loops** — operations in hooks can re-trigger the same hooks; use `req.context` flags
+4. **Field-level access** returns boolean only, no query constraints
+5. **Relationship depth** defaults to 2; set `depth: 0` for IDs only
+6. **Draft status** — `_status` field is auto-injected when drafts are enabled
+7. **Types regenerate automatically** in dev (`autoGenerate`) and during `payload build` — avoid running `generate:types` manually
+8. **MongoDB transactions** require replica set configuration
+9. **SQLite transactions** are disabled by default; enable with `transactionOptions: {}`
+10. **Point fields** are not supported in SQLite
+11. **Computed virtual titles** — fields configured with `virtual: true` cannot be used in `admin.useAsTitle`; use a stored top-level field
+12. **Generated array types are nullable** — Generated Payload types mark array fields as `T[] | null`, but destructuring defaults like `= []` only handle `undefined`. Use `?? []` after destructuring:
+   ```ts
+   // ❌ FAILS with strict null checks — destructuring default doesn't handle null
+   const { items = [] } = block
+
+   // ✅ CORRECT — nullish coalescing handles both null and undefined
+   const { items } = block
+   const safeItems = items ?? []
+
+   // Or inline:
+   const items = block.items ?? []
+   ```
+
+## Best Practices
+
+### Content and Data Modeling
+
+- Apply [the lifecycle decision](#choose-drafts-versions-and-domain-status-by-lifecycle)
+  before adding versions, drafts, `_status` queries, or a domain `status` field
+- Use native `slug` field type (`{ type: 'slug', useAsSlug: 'title' }`) for slugs
+  instead of hand-rolling a unique text field
+- Use a stored top-level field for `admin.useAsTitle`; never use a computed
+  `virtual: true` field as the title
+- Reserve `position: 'sidebar'` for short, at-a-glance fields (status, category,
+  author, date); keep long fields (description, rich text) in the main area
+
+### Security
+
+- Default to restrictive access, gradually add permissions
+- Use `overrideAccess: false` whenever the call acts for a user, and pass that `user`
+- Field-level access only returns boolean (no query constraints)
+- Never trust client-provided data
+- Use `saveToJWT: true` for roles to avoid database lookups
+
+### Performance
+
+- Index frequently queried fields
+- Use `select` to limit returned fields
+- Set `maxDepth` on relationships to prevent over-fetching
+- Prefer query constraints over async operations in access control
+- Cache expensive operations in `req.context`
+
+### Data Integrity
+
+- Always pass `req` to nested operations in hooks
+- Use context flags to prevent infinite hook loops
+- Enable transactions for MongoDB (requires replica set) and Postgres
+- Use `beforeValidate` for data formatting
+- Use `beforeChange` for business logic
+
+### Type Safety
+
+- Let dev (`autoGenerate`) and `payload build` generate types; run `generate:types` manually only when neither is running
+- Import types from generated `payload-types.ts`
+- Type your user object: `import type { User } from '@/payload-types'`
+- Use field type guards for runtime type checking
+- When extracting any Payload value into a named constant — a collection, field, hook, access function, plugin, etc. — annotate it with the matching Payload type (`CollectionConfig`, `Field`, `CollectionBeforeChangeHook`, `Access`, `Plugin`, …) or use `satisfies <Type>`. Without an annotation, string properties like `type: 'text'` widen to `string` and discriminated unions (`Field`, `CollectionConfig`) fail to resolve. Inline literals get this for free via contextual typing; extracted constants do not.
+- **Handle nullable arrays correctly**: Generated types mark array fields as `T[] | null`. Always use `?? []` (nullish coalescing) after destructuring, never rely on destructuring defaults `= []` which only handle `undefined`
+
+### Organization
+
+- Keep collections in separate files
+- Extract access control to `access/` directory
+- Extract hooks to `hooks/` directory
+- Use reusable field factories for common patterns
+- Document complex access control with comments
+
+## Completion Audit
+
+Run this audit before reporting any application-changing task complete, and
+check every applicable item:
+
+- When an unauthenticated public route reads Payload with
+  `overrideAccess: false`, give the collection an explicit public `access.read`
+  policy for the records that route may expose. Do not assume omitted access is
+  public.
+- Seed requested starter documents through the Payload MCP workflow and verify
+  them with a separate read or count. Do not leave an uncalled seed endpoint or
+  ask the user to seed the delivered app manually.
+- When `useTransition` calls a Server Action, keep `revalidatePath` out of the
+  action. Return a serializable result, then call `router.refresh()` on success.
+- Use `next/image` for application content images, with useful alt text and
+  dimensions or a sized `fill` parent. For Payload uploads, pass `media.url`
+  through the project's custom image loader (`figma-image-loader.ts`). Do
+  not add a same-origin `/media/[id]` proxy, replace `Image` with raw
+  `<img>`, disable optimization globally, or add `images.remotePatterns`
+  when a custom loader is already configured.
+- Build application UI with the project's configured styling system from the
+  first edit. Do not prototype static styling with inline style objects and plan
+  to clean it up later. Keep inline styles only for values computed at runtime
+  that the styling system cannot express.
+- With `next/font`, do not set both a fixed `weight` and variable `axes`; omit
+  one or the other as required by the font.
+- Before finishing UI, search changed source for raw `<img>`, non-computed
+  inline `style` objects, and event handlers in Server Components. Convert
+  content images and static styles to the project conventions, and move
+  interactive elements behind a Client Component boundary or use CSS
+  interaction. Review every result from
+  `rg '<img|style=\{\{' src/app src/components`: only computed style values may
+  remain, and a utility font class must not be duplicated by `fontFamily`.
+- For rendering or caching work, track production rendering evidence as its own
+  pending completion todo, separate from any general verification, testing, or
+  bootstrap todo. It stays pending until both halves are observed: every public
+  route is classified static, cached, or request-time from the production route
+  table, and a unique content mutation is visible to a fresh production request
+  for each route the change affects. Source inspection, a dev preview,
+  `verify-bootstrap`, and final-response claims cannot complete it.
+- For rendering or caching work, run `figma make verify-deploy` and inspect the
+  production route table. This uses the Make workload's managed environment;
+  raw `pnpm build` in the interactive shell may not. A green development
+  bootstrap is not production-build evidence. Never finish while the preview
+  shows a Build Error. In the final response, name each public route as static,
+  cached, or request-time and explain how a later visitor sees Payload edits.
+  For cached routes, summarize the tags and mutation hooks. Report the observed
+  verification result instead of inferring it from source.
+
+## Reference Documentation
+
+- **[FIELDS.md](reference/FIELDS.md)** - All field types, validation, admin options
+- **[FIELD-TYPE-GUARDS.md](reference/FIELD-TYPE-GUARDS.md)** - Type guards for runtime field type checking and narrowing
+- **[COLLECTIONS.md](reference/COLLECTIONS.md)** - Collection configs, auth, upload, drafts, live preview
+- **[HOOKS.md](reference/HOOKS.md)** - Collection hooks, field hooks, context patterns
+- **[ACCESS-CONTROL.md](reference/ACCESS-CONTROL.md)** - Collection, field, global access control, RBAC, multi-tenant
+- **[ACCESS-CONTROL-ADVANCED.md](reference/ACCESS-CONTROL-ADVANCED.md)** - Context-aware, time-based, subscription-based access, factory functions, templates
+- **[QUERIES.md](reference/QUERIES.md)** - Query operators, Local/REST/GraphQL APIs
+- **[ENDPOINTS.md](reference/ENDPOINTS.md)** - Custom API endpoints: authentication, helpers, request/response patterns
+- **[ADVANCED.md](reference/ADVANCED.md)** - Authentication, jobs, endpoints, components, plugins, localization
+- **[PLUGIN-DEVELOPMENT.md](reference/PLUGIN-DEVELOPMENT.md)** - Plugin architecture, monorepo structure, patterns, best practices
+
+## Resources
+
+- llms-full.txt: <https://payloadcms.com/llms-full.txt>
+- Docs: <https://payloadcms.com/docs>
+- GitHub: <https://github.com/payloadcms/payload>
+- Examples: <https://github.com/payloadcms/payload/tree/main/examples>
+- Templates: <https://github.com/payloadcms/payload/tree/main/templates>
+To read a supporting file, call `use_skill` again with the same `name`, `reference.generation` = `7d48f8eb9ed3a19b09f7a61b9ef93fca206e35ddb070c959b2b184b7706c7b68`, and `reference.path` set to one of:
+- `reference/ACCESS-CONTROL-ADVANCED.md`
+- `reference/ACCESS-CONTROL.md`
+- `reference/ADVANCED.md`
+- `reference/COLLECTIONS.md`
+- `reference/ENDPOINTS.md`
+- `reference/FIELD-TYPE-GUARDS.md`
+- `reference/FIELDS.md`
+- `reference/HOOKS.md`
+- `reference/PLUGIN-DEVELOPMENT.md`
+- `reference/QUERIES.md`

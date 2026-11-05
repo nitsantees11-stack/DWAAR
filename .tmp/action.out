@@ -1,0 +1,3 @@
+[07:18:02] [32mINFO[39m: [36mUsing API Key authentication[39m
+[07:18:02] [32mINFO[39m: [36mFound 33 existing collections[39m
+[07:18:02] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m

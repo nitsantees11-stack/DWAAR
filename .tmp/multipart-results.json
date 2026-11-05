@@ -1,0 +1,25 @@
+{
+ "passed": 18,
+ "failed": 0,
+ "failures": [],
+ "all": [
+  "PASS plain fields: file + type -> 201 { ok, document }",
+  "PASS saved file downloads unchanged",
+  "PASS Idempotency-Key header works for multipart",
+  "PASS repeat with the same key replays, no second file",
+  "PASS optional expiresAt is read",
+  "PASS driving licence without expiresAt -> expiry_required",
+  "PASS empty expiresAt counts as not sent",
+  "PASS missing type -> invalid_body / type",
+  "PASS unknown type -> invalid_body / type",
+  "PASS no file -> file_required",
+  "PASS octet-stream file typed from its extension",
+  "PASS non image/PDF -> file_type",
+  "PASS corrupt PDF -> 400 file_invalid (not a 500)",
+  "PASS legacy _payload JSON field still works",
+  "PASS exactly the 5 accepted uploads were stored",
+  "PASS jobs/:id/media reads plain kind (reaches the job check)",
+  "PASS jobs/:id/media unknown kind -> invalid_body / kind",
+  "PASS test data cleaned up"
+ ]
+}

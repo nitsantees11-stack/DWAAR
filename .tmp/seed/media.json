@@ -1,0 +1,10 @@
+{
+  "slug": "media",
+  "documents": [
+    { "data": { "alt": "Technician repairing an Android smartphone on a workbench" }, "file": { "source": "externalURL", "url": "https://images.unsplash.com/photo-1550041473-d296a3a8a18a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600", "name": "mobile-repair.jpg" } },
+    { "data": { "alt": "Split air conditioner outdoor unit mounted on a building wall" }, "file": { "source": "externalURL", "url": "https://images.unsplash.com/photo-1722131646940-b821a6cc6252?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600", "name": "ac-service.jpg" } },
+    { "data": { "alt": "Mechanic working on a motorcycle in a garage" }, "file": { "source": "externalURL", "url": "https://images.unsplash.com/photo-1636761358757-0a616eb9e17e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600", "name": "bike-mechanic.jpg" } },
+    { "data": { "alt": "Stainless steel refrigerator in a modern kitchen" }, "file": { "source": "externalURL", "url": "https://images.unsplash.com/photo-1643356472833-5b1f2cd4ca3c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600", "name": "fridge.jpg" } },
+    { "data": { "alt": "Mechanic hands working on a car engine with a wrench" }, "file": { "source": "externalURL", "url": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1600", "name": "car-mechanic.jpg" } }
+  ]
+}

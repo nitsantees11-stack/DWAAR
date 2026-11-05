@@ -1,0 +1,3 @@
+{"level":30,"time":1793789191809,"pid":5770,"hostname":"cloudchamber","name":"payload","msg":"Using API Key authentication"}
+{"level":30,"time":1793789192022,"pid":5770,"hostname":"cloudchamber","name":"payload","msg":"Found 22 existing collections"}
+{"level":40,"time":1793789192022,"pid":5770,"hostname":"cloudchamber","name":"payload","msg":"No email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview."}

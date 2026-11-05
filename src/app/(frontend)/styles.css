@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-jakarta), var(--font-devanagari), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-jakarta), var(--font-devanagari), ui-sans-serif, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+}
+
+@theme {
+  --color-canvas: #f5f4f0;
+  --color-surface: #ffffff;
+  --color-ink: #111111;
+  --color-ink-2: #3b3a37;
+  --color-muted: #6c6962;
+  --color-faint: #a29e95;
+  --color-line: #e7e4dd;
+  --color-line-2: #f0eee9;
+  --color-brand: #ff5a1f;
+  --color-brand-ink: #c2410c;
+  --color-brand-soft: #fff0e8;
+  --color-success: #13744a;
+  --color-success-soft: #e2f3e9;
+  --color-warn: #a86a10;
+  --color-warn-soft: #fdf1d8;
+  --color-danger: #c22f29;
+  --color-danger-soft: #fdeceb;
+  --color-night: #121417;
+  --color-night-2: #1d2025;
+
+  --shadow-card: 0 1px 2px rgb(17 17 17 / 0.04), 0 4px 16px -6px rgb(17 17 17 / 0.08);
+  --shadow-float: 0 12px 40px -12px rgb(17 17 17 / 0.28);
+
+  --animate-ping-ring: ping-ring 3.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-sweep: sweep 6s linear infinite;
+  --animate-rise: rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-blink: blink 1.6s ease-in-out infinite;
+
+  @keyframes ping-ring {
+    0% { transform: scale(0.15); opacity: 0.65; }
+    100% { transform: scale(1); opacity: 0; }
+  }
+  @keyframes sweep {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+}
+
+/* Section accents: each service vertical has its own colour, used via bg-(--accent) etc. */
+.theme-brand { --accent: #ff5a1f; --accent-ink: #c2410c; --accent-soft: #fff0e8; }
+.theme-mobile { --accent: #4f46e5; --accent-ink: #3730a3; --accent-soft: #eef0ff; }
+.theme-ac { --accent: #0891b2; --accent-ink: #0e7490; --accent-soft: #e3f6fb; }
+.theme-bike { --accent: #e0442a; --accent-ink: #b4301b; --accent-soft: #fdebe6; }
+.theme-fridge { --accent: #0d9488; --accent-ink: #0f766e; --accent-soft: #e3f5f3; }
+.theme-car { --accent: #ca8a04; --accent-ink: #a16207; --accent-soft: #fdf4d8; }
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  ::selection {
+    background: #ffd9c7;
+  }
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+}
+
+/* "Reduce motion" app preference (Settings > App preferences). */
+html[data-reduce-motion="true"] *,
+html[data-reduce-motion="true"] *::before,
+html[data-reduce-motion="true"] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.figma-custom-code-fragment {
+  display: contents;
+}
+
+.figma-bypass-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 2147483647;
+  transform: translateY(-150%);
+  border-radius: 6px;
+  background: #111827;
+  color: #fff;
+  padding: 8px 12px;
+  font: 600 14px/1.2 system-ui, sans-serif;
+  text-decoration: none;
+}
+
+.figma-bypass-link:focus {
+  transform: translateY(0);
+}

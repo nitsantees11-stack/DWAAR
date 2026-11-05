@@ -1,0 +1,126 @@
+{
+  "slug": "service-categories",
+  "documents": [
+    { "data": {
+      "name": "Mobile Repair", "slug": "mobile-repair", "status": "live", "flow": "pickup_drop", "icon": "mobile", "order": 1,
+      "tagline": "Pickup, hub repair aur drop — 90 minute mein",
+      "description": "Screen, battery, charging port ya water damage — rider ghar se phone uthata hai, hamare hub par certified technician theek karta hai, aur wahi rider wapas deta hai. Checkup video dekh kar hi aap price approve karte ho.",
+      "heroImage": "67b075f1-5c7a-478c-8bed-4f31bb9d8943",
+      "promise": { "value": "90 min", "label": "pickup se drop" },
+      "pricing": { "visitFeePaise": 0, "nightVisitFeePaise": 0, "cancelAfterAssignFeePaise": 0, "declineFeePaise": 9900 },
+      "serviceHours": { "startHour": 9, "endHour": 21, "allowAsap": true },
+      "brands": [{"name":"Apple"},{"name":"Samsung"},{"name":"OnePlus"},{"name":"Xiaomi"},{"name":"Vivo"},{"name":"Oppo"},{"name":"Realme"},{"name":"Google"},{"name":"Motorola"},{"name":"Nothing"}],
+      "highlights": [
+        {"title":"Pickup & drop FREE","body":"Repair karwane par koi delivery charge nahi"},
+        {"title":"Video quote","body":"Checkup ka video dekho, phir approve karo"},
+        {"title":"Upto 180-day warranty","body":"Har approved bill par digital warranty"},
+        {"title":"Data safe","body":"SIM aur memory card aapke paas hi rehta hai"}
+      ],
+      "howItWorks": [
+        {"title":"Book karo","body":"Model aur problem chuno, 2 minute lagte hain"},
+        {"title":"Rider pickup","body":"4 photos aur IMEI ke saath digital receipt"},
+        {"title":"Video quote","body":"Technician ka checkup video, aap approve karo"},
+        {"title":"Wapas ghar","body":"Delivery OTP ke saath, warranty card app mein"}
+      ],
+      "faqs": [
+        {"question":"Repair na karwaun toh kitna lagega?","answer":"Sirf ₹99 visiting/delivery charge. Agar bill estimate se zyada aaya toh cancel bilkul free hai. Phone kabhi hold nahi kiya jaata."},
+        {"question":"Mera data safe rahega?","answer":"Rider pickup se pehle SIM aur memory card nikalwa deta hai. Phone ka lock aap chahein toh rakh sakte ho, technician sirf hardware test karta hai."},
+        {"question":"90 minute ka promise kab lagu hota hai?","answer":"Screen, battery aur charging port jab part stock mein ho. Baaki repairs mein quote ke saath pakka time milta hai."},
+        {"question":"Payment kab karna hai?","answer":"Delivery ke time UPI, card ya cash se. Approve kiya hua amount hi lagega, ek rupaya zyada nahi."}
+      ],
+      "warrantyNote": "Original screen par 90 din, premium par 60 aur normal par 30 din. Battery par 180 din tak. Warranty sirf app mein approve aur pay hue bill par milti hai."
+    }},
+    { "data": {
+      "name": "AC Service & Repair", "slug": "ac-service-repair", "status": "live", "flow": "doorstep", "icon": "ac", "order": 2,
+      "tagline": "Jet service, gas refill aur repair — ghar par",
+      "description": "Verified AC technician aapke slot par ghar aata hai. Jet pump se deep cleaning, gas top-up, cooling issue ya installation — kaam shuru karne se pehle price app mein dikhta hai.",
+      "heroImage": "ce7fd4dd-f84e-4bf3-9889-f6dc9273cbbe",
+      "promise": { "value": "Aaj hi", "label": "same-day slot" },
+      "pricing": { "visitFeePaise": 29900, "nightVisitFeePaise": 0, "cancelAfterAssignFeePaise": 4900, "declineFeePaise": 29900 },
+      "serviceHours": { "startHour": 8, "endHour": 20, "allowAsap": false },
+      "deviceTypes": [{"value":"split","label":"Split AC"},{"value":"window","label":"Window AC"}],
+      "brands": [{"name":"LG"},{"name":"Samsung"},{"name":"Voltas"},{"name":"Daikin"},{"name":"Blue Star"},{"name":"Lloyd"},{"name":"Hitachi"},{"name":"Panasonic"},{"name":"Carrier"},{"name":"Whirlpool"},{"name":"Godrej"},{"name":"Haier"}],
+      "highlights": [
+        {"title":"₹299 visit adjust","body":"Kaam karwaya toh visit fee bill mein adjust"},
+        {"title":"30-day warranty","body":"Same problem dobara aaye toh free visit"},
+        {"title":"Jet pump + foam","body":"Indoor aur outdoor dono unit ki safai"},
+        {"title":"Verified experts","body":"Background checked, 5+ saal ka experience"}
+      ],
+      "howItWorks": [
+        {"title":"Slot chuno","body":"Subah 8 se raat 8, aaj ya kal"},
+        {"title":"Technician aata hai","body":"Start OTP se kaam shuru, live status app mein"},
+        {"title":"Price pehle","body":"Extra part laga toh pehle app mein approve"},
+        {"title":"Warranty lock","body":"Bill app mein, 30 din ki service warranty"}
+      ],
+      "faqs": [
+        {"question":"Visit fee kab lagti hai?","answer":"Visit ₹299 hai jo kaam karwane par bill mein adjust ho jaati hai. Sirf checkup karwa ke repair mana kiya toh ₹299 lagta hai."},
+        {"question":"Gas refill ka price fixed kyun nahi?","answer":"Gas ki quantity leak aur AC tonnage par depend karti hai. Technician pressure check karke app mein exact quote bhejta hai, aap approve karo tabhi refill hota hai."},
+        {"question":"Kitne AC ek visit mein ho sakte hain?","answer":"Jitne chahiye. Booking mein AC ki quantity chuno, har AC ka price alag dikhega."},
+        {"question":"Cancel karna ho toh?","answer":"Technician assign hone se pehle bilkul free. Assign hone ke baad ₹49."}
+      ],
+      "warrantyNote": "Service aur repair par 30 din, compressor par 180 din tak. Warranty sirf app ke bill par."
+    }},
+    { "data": {
+      "name": "Bike Repair & SOS", "slug": "bike-repair-sos", "status": "live", "flow": "roadside", "icon": "bike", "order": 3,
+      "tagline": "Mechanic 15-20 min mein, jahan aap ho",
+      "description": "Raaste mein bike band ho gayi, puncture ho gaya, ya ghar par service chahiye — nearest verified mechanic GPS se aap tak aata hai. Part chahiye toh runner le aata hai, bada kaam ho toh garage tak tochan.",
+      "heroImage": "a9a60971-1cfd-44b4-82dc-b4c1edf189bc",
+      "promise": { "value": "15-20 min", "label": "mechanic on-spot" },
+      "pricing": { "visitFeePaise": 14900, "nightVisitFeePaise": 24900, "cancelAfterAssignFeePaise": 4900, "declineFeePaise": 14900 },
+      "serviceHours": { "startHour": 0, "endHour": 24, "allowAsap": true },
+      "deviceTypes": [{"value":"bike","label":"Bike"},{"value":"scooter","label":"Scooter"},{"value":"ev","label":"Electric scooter"}],
+      "brands": [{"name":"Hero"},{"name":"Honda"},{"name":"Bajaj"},{"name":"TVS"},{"name":"Royal Enfield"},{"name":"Yamaha"},{"name":"Suzuki"},{"name":"KTM"},{"name":"Ather"},{"name":"Ola"}],
+      "highlights": [
+        {"title":"Visit ₹149 = pehla kaam","body":"Visit fee mein ₹149 tak ka kaam included"},
+        {"title":"Part runner se","body":"Mechanic wahin rukta hai, part 10 min mein"},
+        {"title":"Garage tochan","body":"Bada kaam ho toh safe tow, aapki approval se"},
+        {"title":"15-day warranty","body":"Same problem par free re-visit"}
+      ],
+      "howItWorks": [
+        {"title":"Location confirm","body":"GPS se 2 tap mein, landmark optional"},
+        {"title":"Mechanic aata hai","body":"Live ETA, masked call, Start OTP"},
+        {"title":"On-spot fix","body":"Bill = max(visit, labour) + parts"},
+        {"title":"Pay in app","body":"Bill app mein toh warranty bhi pakki"}
+      ],
+      "faqs": [
+        {"question":"Raat ko bhi mechanic milega?","answer":"Haan, 24x7. Raat 10 se subah 6 tak visit fee ₹249 hoti hai, bulane se pehle dikhti hai."},
+        {"question":"Bill kaise banta hai?","answer":"Bill = max(visit fee, labour) + parts. Jaise tubeless puncture ka labour ₹120 hai toh bill ₹149 (visit included)."},
+        {"question":"Part nahi hua mechanic ke paas toh?","answer":"Runner part le aata hai. ₹300 tak ka part auto, usse upar app mein aapka approval leke hi kharida jaata hai."},
+        {"question":"Bike on-spot theek nahi hui toh?","answer":"Mechanic garage tochan suggest karega with rough quote. Aap approve karo toh safe tow, warna sirf visit fee."}
+      ],
+      "warrantyNote": "Chain, clutch aur cable adjust par 15 din, puncture par 7 din (same spot), brake pads par 30 din."
+    }},
+    { "data": {
+      "name": "Fridge Repair", "slug": "fridge-repair", "status": "coming_soon", "flow": "doorstep", "icon": "fridge", "order": 4,
+      "tagline": "Cooling, gas aur compressor — jald aa raha hai",
+      "description": "Single door, double door aur side-by-side fridge ke liye verified technicians. Cooling issue, gas leak, thermostat, compressor — sab ghar par, price pehle.",
+      "heroImage": "c3b651a8-2b58-44f2-bcbf-494d9e35b662",
+      "promise": { "value": "Jald", "label": "launch ho raha hai" },
+      "pricing": { "visitFeePaise": 24900, "nightVisitFeePaise": 0, "cancelAfterAssignFeePaise": 4900, "declineFeePaise": 24900 },
+      "serviceHours": { "startHour": 8, "endHour": 20, "allowAsap": false },
+      "highlights": [
+        {"title":"Inspection ₹249","body":"Repair karwane par bill mein adjust"},
+        {"title":"Compressor warranty","body":"180 din tak, supplier-backed"},
+        {"title":"Gas leak test","body":"Nitrogen pressure test ke saath"},
+        {"title":"Same-day slot","body":"Subah 8 se raat 8"}
+      ],
+      "launchNote": "Hum Sector 29 zone mein fridge technicians onboard kar rahe hain. Notify me dabao, launch hote hi sabse pehle aapko batayenge."
+    }},
+    { "data": {
+      "name": "Car Repair & SOS", "slug": "car-repair-sos", "status": "coming_soon", "flow": "roadside", "icon": "car", "order": 5,
+      "tagline": "Jump-start, puncture aur flatbed tow — jald",
+      "description": "Battery down, flat tyre ya breakdown — car mechanic aapki location par, aur zaroorat padi toh sirf flatbed tow partner. Insurance RSA ho toh woh bhi check karenge.",
+      "heroImage": "bced5b52-d77a-4c2d-a38e-a47c1a8f90ee",
+      "promise": { "value": "Jald", "label": "launch ho raha hai" },
+      "pricing": { "visitFeePaise": 29900, "nightVisitFeePaise": 39900, "cancelAfterAssignFeePaise": 4900, "declineFeePaise": 29900 },
+      "serviceHours": { "startHour": 0, "endHour": 24, "allowAsap": true },
+      "highlights": [
+        {"title":"Flatbed tow only","body":"Car ke liye kabhi rope tow nahi"},
+        {"title":"RSA check","body":"Insurance roadside cover ho toh free tow"},
+        {"title":"Partner garages","body":"Bade kaam empanelled garage par"},
+        {"title":"Price pehle","body":"Tow charge per km pehle dikhega"}
+      ],
+      "launchNote": "Car SOS pehle Gurugram ke 5 KM zone mein launch hoga. Notify me dabao, pehle access aapko milega."
+    }}
+  ]
+}

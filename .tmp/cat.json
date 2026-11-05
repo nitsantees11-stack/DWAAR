@@ -1,0 +1,13 @@
+{
+  "slug": "service-categories",
+  "id": "4e21f4fa-98b5-452f-a4d4-6134173dd2f5",
+  "data": {
+    "requireProblemVideo": true,
+    "faqs": [
+      { "id": "6aeb0cda6ab92c157601431e", "question": "Repair na karwaun toh kitna lagega?", "answer": "Sirf ₹99 visiting/delivery charge. Agar bill estimate se zyada aaya toh cancel bilkul free hai. Phone kabhi hold nahi kiya jaata." },
+      { "id": "6aeb0cda6ab92c157601431f", "question": "Mera data safe rahega?", "answer": "Rider pickup se pehle SIM aur memory card nikalwa deta hai. Phone ka lock aap chahein toh rakh sakte ho, technician sirf hardware test karta hai." },
+      { "id": "6aeb0cda6ab92c1576014320", "question": "90 minute ka promise kab lagu hota hai?", "answer": "Sirf un repairs par jo 90 minute mein ho jaati hain — screen, battery, charging port, back glass, speaker/mic aur camera (part stock mein ho toh). Booking mein inke saath \"90 min promise\" likha dikhta hai. Phone dead (on hi nahi hota), water damage ya \"Other problem\" jaise kaam mein zyada time lagta hai, isliye wahan 90 minute ka promise nahi hai — checkup ke baad quote ke saath pakka time milta hai." },
+      { "id": "6aeb0cda6ab92c1576014321", "question": "Payment kab karna hai?", "answer": "Delivery ke time UPI, card ya cash se. Approve kiya hua amount hi lagega, ek rupaya zyada nahi." }
+    ]
+  }
+}

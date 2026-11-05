@@ -1,0 +1,25 @@
+{
+  "slug": "services",
+  "documents": [
+    {
+      "data": {
+        "name": "Other problem",
+        "slug": "other-problem",
+        "category": "4e21f4fa-98b5-452f-a4d4-6134173dd2f5",
+        "active": true,
+        "popular": false,
+        "order": 99,
+        "description": "Problem list mein nahi hai? Apne shabdon mein likho aur video record karo — technician checkup karke quote aur pakka time bhejega.",
+        "priceType": "range",
+        "priceFromPaise": 0,
+        "priceToPaise": 0,
+        "tierPriced": false,
+        "durationLabel": "Quote mein ETA",
+        "ninetyMinPromise": false,
+        "isOtherProblem": true,
+        "warrantyDays": 0,
+        "allowQuantity": false
+      }
+    }
+  ]
+}

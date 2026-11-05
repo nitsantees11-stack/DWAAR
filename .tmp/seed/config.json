@@ -1,0 +1,6 @@
+{ "slug": "business-config", "data": {
+  "zone": { "name": "Sector 29, Gurugram", "hubName": "dwaar Hub · Sector 29", "centerLat": 28.4683, "centerLng": 77.0629, "radiusKm": 5, "onlinePartners": 12 },
+  "support": { "phone": "+91 80000 12345", "whatsapp": "918000012345", "email": "help@dwaar.in", "hours": "Subah 8 se raat 10 tak, roz" },
+  "tierMultipliers": { "budget": 0.7, "mid": 1, "premium": 1.8, "flagship": 3 },
+  "rewards": { "referralRewardPaise": 10000, "slaCreditPaise": 10000 }
+} }

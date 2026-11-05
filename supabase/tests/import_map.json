@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "jsr:@supabase/supabase-js@2.49.8": "./supabase-js.test-double.ts",
+    "../functions/server/table-adapter.tsx": "./table-adapter.test-double.ts",
+    "../functions/server/kv-adapter.tsx": "./kv-adapter.test-double.ts"
+  }
+}
